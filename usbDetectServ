@@ -1,0 +1,47 @@
+#!/bin/bash
+
+USB="$(mount | grep '/dev/sdc')" #to detect usb
+
+while [ true ]
+do
+	USB="$(mount | grep '/dev/sdc')"
+	
+	if [[ -z "$USB" ]]
+	then
+		echo "usb not detected"
+	else
+
+		cd ~/Desktop
+		echo -ne "\a"       #to play sound
+		echo "usb detected"
+	
+		if [[ -d ~/Desktop/usb_mnt ]]
+		then
+			echo "folder usb_mnt already created"
+			ls ~/Desktop/usb_mnt
+		else
+			mkdir ~/Desktop/usb_mnt
+			echo "folder usb_mnt already created"
+		
+		fi
+	
+		cd ~/Desktop
+		sudo mount /dev/sdc1 usb_mnt  #mount usb
+		echo "usb mounted"
+		ls usb_mnt
+		cd ~/Desktop/usb_mnt
+
+		for i in $(seq 0 0)    # create text : message log
+		do
+			echo "Time and Date this text was created: $(date +%D-%T)" >> message.txt
+			echo "message created"
+			ls ~/Desktop/usb_mnt
+		done
+	
+		cd $OLDPWD
+		cd ~/Desktop
+		sudo umount /dev/sdc1   #unmount usb
+		echo -ne "\007"
+		echo "unmount successful"
+	fi
+done
